@@ -8,15 +8,17 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use OCA\Deck\Service\CardService;
+use OCA\Deck\Service\BoardService;
 use OCA\Deck\Service\PermissionService;
 
 final class CreateCard extends Command {
 
-  public function __construct(CardService $cardService, PermissionService $permissionService) {
-    parent::__construct();
+  public function __construct(CardService $cardService, BoardService $boardService, PermissionService $permissionService, ?string $userId) {
 
     $this->cardService = $cardService;
+    $this->boardService = $boardService;
     $this->permissionService = $permissionService;
+    parent::__construct();
   }
 
   protected function configure() {
@@ -44,11 +46,12 @@ final class CreateCard extends Command {
   protected function execute(InputInterface $input, OutputInterface $output): int {
     $stackId = $input->getArgument('stackId');
     $title = $input->getArgument('cardTitle');
-    $userId = $input->getArgument('userId');
+    $this->userId = $input->getArgument('userId');
+    $this->boardService->setUserId($this->userId);
 
-    $this->permissionService->setUserId($userId);
+    $this->permissionService->setUserId($this->userId);
 
-    $card = $this->cardService->create($title, $stackId, 'plain', 999, $userId);
+    $card = $this->cardService->create($title, $stackId, 'plain', 999, $this->userId, '', null);
 
     return 0;
   }

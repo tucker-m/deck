@@ -31,14 +31,20 @@ use OCP\EventDispatcher\Event;
 
 abstract class ACardEvent extends Event {
 	private $card;
+	private $userId;
 	
-	public function __construct(Card $card) {
+	public function __construct(Card $card, ?string $userId) {
 		parent::__construct();
 
 		$this->card = $card;
+		$this->userId = $userId;
 	}
 
 	public function getCard(): Card {
 		return $this->card;
+	}
+
+	public function getUserId(): string {
+        	return $this->userId;
 	}
 }
