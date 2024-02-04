@@ -241,7 +241,7 @@ class CardService {
 
 		$this->activityManager->triggerEvent(ActivityManager::DECK_OBJECT_CARD, $card, ActivityManager::SUBJECT_CARD_CREATE, [], $owner);
 		$this->changeHelper->cardChanged($card->getId(), false);
-		$this->eventDispatcher->dispatchTyped(new CardCreatedEvent($card, $owner));
+		$this->eventDispatcher->dispatchTyped(new CardCreatedEvent($card));
 
 		return $card;
 	}
