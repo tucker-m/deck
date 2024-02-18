@@ -7,17 +7,16 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use OCA\Deck\DB\Card;
 use OCA\Deck\Service\CardService;
 use OCA\Deck\Service\BoardService;
-use OCA\Deck\Service\PermissionService;
 
 final class CreateCard extends Command {
 
-  public function __construct(CardService $cardService, BoardService $boardService, PermissionService $permissionService, ?string $userId) {
+  public function __construct(CardService $cardService, BoardService $boardService) {
 
     $this->cardService = $cardService;
     $this->boardService = $boardService;
-    $this->permissionService = $permissionService;
     parent::__construct();
   }
 
@@ -43,16 +42,21 @@ final class CreateCard extends Command {
     ;
   }
 
+  protected function createCard(string $userId, int $stackId, string $cardTitle): Card {
+    $card = $this->cardService->create($cardTitle, $stackId, 'plain', 999, $userId, '', null);
+
+    return $card;
+  }
+
   protected function execute(InputInterface $input, OutputInterface $output): int {
     $stackId = $input->getArgument('stackId');
     $title = $input->getArgument('cardTitle');
     $this->userId = $input->getArgument('userId');
     $this->boardService->setUserId($this->userId);
 
-    $this->permissionService->setUserId($this->userId);
+    $card = $this->createCard($this->userId, $stackId, $title);
 
-    $card = $this->cardService->create($title, $stackId, 'plain', 999, $this->userId, '', null);
-
+    $output->writeln(json_encode($card));
     return 0;
   }
 }
