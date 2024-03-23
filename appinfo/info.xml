@@ -56,6 +56,7 @@
         <command>OCA\Deck\Command\BoardImport</command>
         <command>OCA\Deck\Command\TransferOwnership</command>
         <command>OCA\Deck\Command\CreateCard</command>
+        <command>OCA\Deck\Command\AttachFile</command>
     </commands>
     <activity>
         <settings>
